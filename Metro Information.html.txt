@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Archive — Vampires</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #090b10;
+            --sidebar: #0d1017;
+            --panel: #10141d;
+            --panel-light: #151a25;
+            --border: #242b39;
+
+            --text: #e7eaf0;
+            --muted: #9299a8;
+            --faint: #616978;
+
+            --accent: #b73535;
+            --accent-light: #e35353;
+            --accent-dark: #6f2020;
+
+            --warning: #d7a74a;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* ================================
+           TOPBAR
+        ================================= */
+
+        .topbar {
+            height: 64px;
+            border-bottom: 1px solid var(--border);
+            background: #0b0e14;
+
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    var(--accent-light),
+                    var(--accent-dark)
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .topbar-right {
+            margin-left: auto;
+            color: var(--faint);
+            font-size: 13px;
+        }
+
+        /* ================================
+           LAYOUT
+        ================================= */
+
+        .layout {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 900px);
+            justify-content: center;
+            gap: 50px;
+
+            padding: 52px 30px 80px;
+        }
+
+        /* ================================
+           SIDEBAR
+        ================================= */
+
+        .sidebar {
+            position: sticky;
+            top: 105px;
+            align-self: start;
+        }
+
+        .sidebar-label {
+            color: var(--faint);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+
+            margin-bottom: 12px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            padding: 9px 12px;
+            border-radius: 6px;
+
+            color: var(--muted);
+            text-decoration: none;
+
+            font-size: 14px;
+
+            border: 1px solid transparent;
+
+            transition: 0.15s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            color: white;
+            background: rgba(183, 53, 53, 0.11);
+            border-color: rgba(227, 83, 83, 0.25);
+        }
+
+        .nav-indent {
+            margin-left: 13px;
+        }
+
+        /* ================================
+           ARTICLE
+        ================================= */
+
+        .article {
+            min-width: 0;
+        }
+
+        .breadcrumb {
+            color: var(--faint);
+            font-size: 13px;
+            margin-bottom: 17px;
+        }
+
+        .breadcrumb span {
+            color: var(--muted);
+        }
+
+        .title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 25px;
+
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 25px;
+        }
+
+        .title {
+            font-size: clamp(36px, 6vw, 58px);
+            line-height: 1;
+            letter-spacing: -0.045em;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            margin-top: 12px;
+            color: var(--muted);
+            max-width: 650px;
+            font-size: 15px;
+        }
+
+        .race-tag {
+            flex-shrink: 0;
+
+            color: var(--accent-light);
+            border: 1px solid rgba(227, 83, 83, 0.35);
+            background: rgba(183, 53, 53, 0.10);
+
+            border-radius: 5px;
+            padding: 5px 9px;
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .author {
+            margin-top: 16px;
+            color: var(--faint);
+            font-size: 13px;
+        }
+
+        .author strong {
+            color: var(--muted);
+        }
+
+        /* ================================
+           SUMMARY BOX
+        ================================= */
+
+        .summary {
+            margin-top: 30px;
+
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+
+            padding: 18px 20px;
+            border-radius: 5px;
+
+            color: #c8cdd7;
+            font-size: 14px;
+        }
+
+        /* ================================
+           SECTIONS
+        ================================= */
+
+        section {
+            margin-top: 42px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 18px;
+
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--border);
+        }
+
+        /* ================================
+           ABILITY CARDS
+        ================================= */
+
+        .ability-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ability {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .ability-header {
+            padding: 13px 17px;
+
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ability-icon {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            box-shadow: 0 0 10px rgba(227, 83, 83, 0.35);
+        }
+
+        .ability-name {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .ability-content {
+            padding: 14px 20px 15px 39px;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        li {
+            color: #b9c0cd;
+            font-size: 14px;
+            padding-left: 3px;
+        }
+
+        li::marker {
+            color: var(--faint);
+        }
+
+        strong {
+            color: var(--text);
+        }
+
+        .observed {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        /* ================================
+           WARNING
+        ================================= */
+
+        .warning {
+            margin-top: 40px;
+
+            padding: 18px 20px;
+
+            background: rgba(215, 167, 74, 0.06);
+            border: 1px solid rgba(215, 167, 74, 0.27);
+            border-radius: 6px;
+        }
+
+        .warning-title {
+            color: var(--warning);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+
+            margin-bottom: 7px;
+        }
+
+        .warning p {
+            color: #c9c4b5;
+            font-size: 14px;
+        }
+
+        /* ================================
+           NOTES
+        ================================= */
+
+        .notes {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+
+            padding: 18px 22px;
+        }
+
+        /* ================================
+           FOOTER
+        ================================= */
+
+        .article-footer {
+            border-top: 1px solid var(--border);
+            margin-top: 45px;
+            padding-top: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            color: var(--faint);
+            font-size: 12px;
+        }
+
+        .signature {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        /* ================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 800px) {
+            .layout {
+                display: block;
+                padding: 35px 20px 70px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .title-row {
+                flex-direction: column;
+            }
+
+            .race-tag {
+                align-self: flex-start;
+            }
+
+            .article-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">
+        <div class="logo-mark">A</div>
+        Archive
+    </div>
+
+    <div class="topbar-right">
+        Information Encyclopedia
+    </div>
+</header>
+
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-label">
+            Encyclopedia
+        </div>
+
+        <nav class="nav">
+
+            <a class="nav-item" href="#">
+                Home
+            </a>
+
+            <a class="nav-item active" href="#">
+                Races
+            </a>
+
+            <a class="nav-item nav-indent active" href="#">
+                Vampires
+            </a>
+
+            <a class="nav-item nav-indent" href="#">
+                Humans
+            </a>
+
+            <a class="nav-item nav-indent" href="#">
+                Unknown
+            </a>
+
+            <a class="nav-item" href="#">
+                Abilities
+            </a>
+
+            <a class="nav-item" href="#">
+                Locations
+            </a>
+
+            <a class="nav-item" href="#">
+                Organizations
+            </a>
+
+            <a class="nav-item" href="#">
+                Records
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ARTICLE -->
+    <main class="article">
+
+        <div class="breadcrumb">
+            Encyclopedia /
+            <span>Races</span> /
+            Vampires
+        </div>
+
+
+        <div class="title-row">
+
+            <div>
+                <h1 class="title">
+                    Vampires
+                </h1>
+
+                <p class="subtitle">
+                    A supernatural race possessing enhanced physical
+                    capabilities, abnormal regenerative properties,
+                    and abilities centered around predation.
+                </p>
+
+                <div class="author">
+                    Written by
+                    <strong>Han Jue</strong>
+                </div>
+            </div>
+
+            <div class="race-tag">
+                Race
+            </div>
+
+        </div>
+
+
+        <div class="summary">
+            Vampires are considerably more dangerous than ordinary humans
+            in direct combat. Their known traits include enhanced strength,
+            increased vitality, rapid regeneration, blood feeding,
+            heightened senses, and specialized movement abilities.
+        </div>
+
+
+        <!-- RACIAL TRAITS -->
+        <section>
+
+            <h2 class="section-title">
+                Racial Traits
+            </h2>
+
+            <div class="ability-list">
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Enhanced Strength
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Deals significantly increased physical damage.
+                            </li>
+
+                            <li>
+                                High damage output is present even without
+                                heavy investment into the
+                                <strong>Strength</strong> stat.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Enhanced Vitality
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Vampires naturally possess increased maximum HP.
+                            </li>
+
+                            <li>
+                                Maximum health may vary between vampires
+                                despite identical Vitality levels.
+                            </li>
+
+                            <li class="observed">
+                                Observed: 7 Vitality → 167 HP (HUMAN) / 187 HP (VAMPIRE).
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Regeneration
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Possesses extremely powerful natural regeneration.
+                            </li>
+
+                            <li>
+                                Severe damage can be recovered from rapidly.
+                            </li>
+
+                            <li>
+                                Makes prolonged engagements extremely difficult.
+                            </li>
+
+                            <li>
+                                Current observations suggest conventional
+                                attrition is ineffective.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Blood Feeding
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Vampires can bite living targets and consume blood.
+                            </li>
+
+                            <li>
+                                The bite inflicts considerable damage.
+                            </li>
+
+                            <li>
+                                Feeding restores or satisfies
+                                <strong>Hunger</strong>.
+                            </li>
+
+                            <li class="observed">
+                                Observed: One bite reduced 167 HP → 121 HP.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Predatory Sense
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Functions similarly to close-range ESP.
+                            </li>
+
+                            <li>
+                                Allows nearby entities to be detected
+                                without relying entirely on sight.
+                            </li>
+
+                            <li>
+                                Effective range appears relatively limited.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MOBILITY -->
+        <section>
+
+            <h2 class="section-title">
+                Mobility
+            </h2>
+
+            <div class="ability-list">
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Gliding
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Certain vampires are capable of gliding.
+                            </li>
+
+                            <li>
+                                Allows increased aerial control and
+                                improved traversal.
+                            </li>
+
+                            <li>
+                                Currently unknown whether this ability
+                                is universal.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div class="ability">
+
+                    <div class="ability-header">
+                        <div class="ability-icon"></div>
+
+                        <div class="ability-name">
+                            Climbing
+                        </div>
+                    </div>
+
+                    <div class="ability-content">
+                        <ul>
+                            <li>
+                                Certain vampires possess enhanced climbing ability.
+                            </li>
+
+                            <li>
+                                Capable of scaling buildings and vertical
+                                surfaces with relative ease.
+                            </li>
+
+                            <li>
+                                Currently unknown whether this ability
+                                is universal.
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NOTES -->
+        <section>
+
+            <h2 class="section-title">
+                Notes
+            </h2>
+
+            <div class="notes">
+
+                <ul>
+
+                    <li>
+                        Vampire abilities may differ between individuals.
+                    </li>
+
+                    <li>
+                        Gliding and Climbing have not yet been confirmed
+                        as universal racial traits.
+                    </li>
+
+                    <li>
+                        Regeneration combined with feeding makes vampires
+                        extremely difficult to defeat through prolonged combat.
+                    </li>
+
+                    <li>
+                        Additional racial abilities may remain undocumented.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </section>
+
+
+        <!-- WARNING -->
+        <div class="warning">
+
+            <div class="warning-title">
+                Threat Advisory
+            </div>
+
+            <p>
+                Do not assume severe injury means a vampire has been neutralized.
+                Their regenerative capabilities can allow them to rapidly return
+                to combat. Confirm neutralization or disengage.
+            </p>
+
+        </div>
+
+
+        <footer class="article-footer">
+
+            <span>
+                Entry subject to revision as further information is discovered.
+            </span>
+
+            <span class="signature">
+                — Han Jue
+            </span>
+
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
